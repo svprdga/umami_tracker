@@ -16,11 +16,15 @@ You can track page views and events through an instance of `UmamiTracker`. In or
 
 First import this library:
 
-`import 'package:umami_tracker/umami_tracker.dart';`
+```dart
+import 'package:umami_tracker/umami_tracker.dart';
+```
 
 Make sure to invoke this before creating the tracker:
 
-`WidgetsFlutterBinding.ensureInitialized();`
+```dart
+WidgetsFlutterBinding.ensureInitialized();
+```
 
 Create an instance of `UmamiTracker`. You can add this instance to your dependency injection graph or use any other mechanism to reuse in your code:
 
@@ -34,7 +38,9 @@ final umamiTracker = await createUmamiTracker(
 
 You can now track a screen view (page view):
 
-`await umamiTracker.trackScreenView('screen-name');`
+```dart
+await umamiTracker.trackScreenView('screen-name');
+```
 
 You can also track events:
 
