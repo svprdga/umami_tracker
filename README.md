@@ -2,6 +2,8 @@
 
 Umami tracker for Flutter.
 
+[![style: lint](https://img.shields.io/badge/style-lint-4BC0F5.svg)](https://pub.dev/packages/lint)
+
 This package tries to adapt the privacy-focused [Umami](https://umami.is/) analytics tool to use in a Flutter application.
 
 ## ⚠ State of this package ⚠
