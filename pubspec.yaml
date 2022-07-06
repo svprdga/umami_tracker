@@ -8,9 +8,9 @@ environment:
   flutter: ">=1.17.0"
 
 dependencies:
-  devicelocale: 0.5.2
-  dio: 4.0.6
-  fk_user_agent: 2.1.0
+  devicelocale: ^0.5.2
+  dio: ^4.0.6
+  fk_user_agent: ^2.1.0
   flutter:
     sdk: flutter
 
