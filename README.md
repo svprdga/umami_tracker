@@ -14,7 +14,7 @@ This package is in an experimental state, it's currently being tested in product
 
 You can track page views and events through an instance of `UmamiTracker`. In order to help in the construction of this object it is recommended to use the `createUmamiTracker()` method.
 
-First import this library:
+First, import this library:
 
 ```dart
 import 'package:umami_tracker/umami_tracker.dart';
