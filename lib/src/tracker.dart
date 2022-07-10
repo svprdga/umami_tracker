@@ -9,6 +9,7 @@ enum _CollectType {
   const _CollectType(this.value);
 }
 
+/// Main class for tracking screen views and events.
 class UmamiTracker {
   final Dio dio;
   final String id;
@@ -58,6 +59,8 @@ class UmamiTracker {
     }
   }
 
+  /// Creates a payload for a page view and then sends it to the remote
+  /// Umami instance.
   Future<void> _collectPageView({
     String? path,
     String? referrer,
@@ -74,6 +77,8 @@ class UmamiTracker {
     await _collect(payload: payload, type: _CollectType.pageview);
   }
 
+  /// Creates a payload for an event and then sends it to the remote
+  /// Umami instance.
   Future<void> _collectEvent({
     required String eventType,
     String? eventValue,
@@ -92,6 +97,10 @@ class UmamiTracker {
     await _collect(payload: payload, type: _CollectType.event);
   }
 
+  /// Gets the correct referrer value.
+  ///
+  /// This method will return a URL value of the the [inputRef] if provided,
+  /// the [firstReferrer] if any, or an empty string.
   String _getReferrer(String? inputRef) {
     String ref;
     if (inputRef != null) {
@@ -117,6 +126,8 @@ class UmamiTracker {
     return ref;
   }
 
+  /// Perform a network request against the Umami instance with the
+  /// provided [payload] and the provided [type].
   Future<void> _collect({
     required Map<String, dynamic> payload,
     required _CollectType type,
