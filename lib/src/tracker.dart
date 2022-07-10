@@ -9,8 +9,9 @@ enum _CollectType {
   const _CollectType(this.value);
 }
 
+/// Main class for tracking screen views and events.
 class UmamiTracker {
-  final String url;
+  final Dio dio;
   final String id;
   final String hostname;
   final String language;
@@ -18,15 +19,17 @@ class UmamiTracker {
   final String userAgent;
 
   String? firstReferrer;
+  late bool isEnabled;
 
   UmamiTracker({
-    required this.url,
+    required this.dio,
     required this.id,
     required this.hostname,
     required this.language,
     required this.screenSize,
     required this.userAgent,
     this.firstReferrer,
+    this.isEnabled = true,
   });
 
   /// Send a pageview using the [screenName]. If [referrer] is provided
@@ -35,7 +38,9 @@ class UmamiTracker {
     String screenName, {
     String? referrer,
   }) async {
-    await _collectPageView(path: screenName, referrer: referrer);
+    if (isEnabled) {
+      await _collectPageView(path: screenName, referrer: referrer);
+    }
   }
 
   /// Send an event with the specified [eventType]. You can optionally provide
@@ -45,13 +50,17 @@ class UmamiTracker {
     String? eventValue,
     String? screenName,
   }) async {
-    await _collectEvent(
-      eventType: eventType,
-      eventValue: eventValue,
-      path: screenName,
-    );
+    if (isEnabled) {
+      await _collectEvent(
+        eventType: eventType,
+        eventValue: eventValue,
+        path: screenName,
+      );
+    }
   }
 
+  /// Creates a payload for a page view and then sends it to the remote
+  /// Umami instance.
   Future<void> _collectPageView({
     String? path,
     String? referrer,
@@ -68,6 +77,8 @@ class UmamiTracker {
     await _collect(payload: payload, type: _CollectType.pageview);
   }
 
+  /// Creates a payload for an event and then sends it to the remote
+  /// Umami instance.
   Future<void> _collectEvent({
     required String eventType,
     String? eventValue,
@@ -86,6 +97,10 @@ class UmamiTracker {
     await _collect(payload: payload, type: _CollectType.event);
   }
 
+  /// Gets the correct referrer value.
+  ///
+  /// This method will return a URL value of the the [inputRef] if provided,
+  /// the [firstReferrer] if any, or an empty string.
   String _getReferrer(String? inputRef) {
     String ref;
     if (inputRef != null) {
@@ -111,13 +126,15 @@ class UmamiTracker {
     return ref;
   }
 
+  /// Perform a network request against the Umami instance with the
+  /// provided [payload] and the provided [type].
   Future<void> _collect({
     required Map<String, dynamic> payload,
     required _CollectType type,
   }) async {
     try {
-      await Dio().post(
-        '$url/api/collect',
+      await dio.post(
+        '/api/collect',
         options: Options(
           headers: {
             'User-Agent': userAgent,
