@@ -14,8 +14,6 @@ This package is in an experimental state, it's currently being tested in product
 
 You can track page views and events through an instance of `UmamiTracker`. In order to help in the construction of this object it is recommended to use the `createUmamiTracker()` method.
 
-### Import the library
-
 First import this library:
 
 ```dart
@@ -51,6 +49,25 @@ await umamiTracker.trackEvent(
   eventType: 'event-type',
   eventValue: 'event-value', // Optionally define a value
   screenName: 'screen-name', // Optionally define a screen
+);
+```
+
+## Other features
+
+### First referrer
+
+You can add a `firstReferrer` value in the `UmamiTracker` creation so that it is sent the first time you track a screen view. This can be useful for you to track for example which app store or source the user has downloaded the app from.
+
+### Enable / disable
+
+The tracking of screen views and events is enabled by default, but you can disable it when creating the `UmamiTracker` or via the `isEnabled` property. For example, you might want to prevent any event to be sent on debug builds:
+
+```dart
+final umamiTracker = await createUmamiTracker(
+  url: 'https://my.umami.instance',
+  id: '9f65dd3f-f2be-4b27-8b58-d76f83510beb',
+  hostname: 'com.my.app',
+  isEnabled: !kDebugMode,
 );
 ```
 
