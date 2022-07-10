@@ -10,7 +10,7 @@ enum _CollectType {
 }
 
 class UmamiTracker {
-  final String url;
+  final Dio dio;
   final String id;
   final String hostname;
   final String language;
@@ -18,15 +18,17 @@ class UmamiTracker {
   final String userAgent;
 
   String? firstReferrer;
+  late bool isEnabled;
 
   UmamiTracker({
-    required this.url,
+    required this.dio,
     required this.id,
     required this.hostname,
     required this.language,
     required this.screenSize,
     required this.userAgent,
     this.firstReferrer,
+    this.isEnabled = true,
   });
 
   /// Send a pageview using the [screenName]. If [referrer] is provided
@@ -35,7 +37,9 @@ class UmamiTracker {
     String screenName, {
     String? referrer,
   }) async {
-    await _collectPageView(path: screenName, referrer: referrer);
+    if (isEnabled) {
+      await _collectPageView(path: screenName, referrer: referrer);
+    }
   }
 
   /// Send an event with the specified [eventType]. You can optionally provide
@@ -45,11 +49,13 @@ class UmamiTracker {
     String? eventValue,
     String? screenName,
   }) async {
-    await _collectEvent(
-      eventType: eventType,
-      eventValue: eventValue,
-      path: screenName,
-    );
+    if (isEnabled) {
+      await _collectEvent(
+        eventType: eventType,
+        eventValue: eventValue,
+        path: screenName,
+      );
+    }
   }
 
   Future<void> _collectPageView({
@@ -116,8 +122,8 @@ class UmamiTracker {
     required _CollectType type,
   }) async {
     try {
-      await Dio().post(
-        '$url/api/collect',
+      await dio.post(
+        '/api/collect',
         options: Options(
           headers: {
             'User-Agent': userAgent,

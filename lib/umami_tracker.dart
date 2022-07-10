@@ -33,24 +33,31 @@ part 'package:umami_tracker/src/tracker.dart';
 /// this value won't be used again. This could be useful to track the app store
 /// or source from where the app was obtained, without sending the value
 /// multiple times throughout the lifespan of the session.
+/// - [isEnabled]: Set if this tracker is enabled or not. When disabled,
+/// calling trackScreenView() or trackEvent() won't have any effect. Defaults
+/// to true.
 ///
 Future<UmamiTracker> createUmamiTracker({
   required String url,
   required String id,
   required String hostname,
   String? firstReferrer,
+  bool isEnabled = true,
 }) async {
   final locale = WidgetsBinding.instance.platformDispatcher.locale;
   final size = Size(window.physicalSize.width, window.physicalSize.height);
   await FkUserAgent.init();
 
+  final dio = Dio()..options.baseUrl = url;
+
   return UmamiTracker(
-    url: url,
+    dio: dio,
     id: id,
     hostname: hostname,
     language: locale.toString(),
     screenSize: '${size.width.toInt()}x${size.height.toInt()}',
     userAgent: FkUserAgent.webViewUserAgent ?? '',
     firstReferrer: firstReferrer,
+    isEnabled: isEnabled,
   );
 }
